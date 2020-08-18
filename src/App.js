@@ -34,21 +34,48 @@ class App extends Component {
   //   })
   // }
 
-  nameChangedHandler = (event) => {
-    this.setState({
-      persons: [
-        { id: 'a1', name: 'Max', age: 28 },
-        { id: 'a2', name: event.target.value, age: 29 },
-        { id: 'a3', name: 'Stephanie', age: 27 }
-      ]
-    })
+  // nameChangedHandler = (event) => {
+  //   this.setState({
+  //     persons: [
+  //       { id: 'a1', name: 'Max', age: 28 },
+  //       { id: 'a2', name: event.target.value, age: 29 },
+  //       { id: 'a3', name: 'Stephanie', age: 27 }
+  //     ]
+  //   })
+  // }
+
+  nameChangedHandler = (event, id) => {
+    const personIndex = this.state.persons.findIndex(p => {
+      return p.id === id;
+    });
+
+    const person = {
+      ...this.state.persons[personIndex]
+    };
+
+    // const person = Object.assign({}, this.state.persons[personIndex]);
+
+    person.name = event.target.value;
+
+    const persons = [...this.state.persons];
+    persons[personIndex] = person;
+
+    this.setState({ persons: persons });
+
+    // this.setState({
+    //   persons: [
+    //     { id: 'a1', name: 'Max', age: 28 },
+    //     { id: 'a2', name: event.target.value, age: 29 },
+    //     { id: 'a3', name: 'Stephanie', age: 27 }
+    //   ]
+    // })
   }
 
   deletePersonHandler = (personIndex) => {
     // const persons = this.state.persons.slice();
     const persons = [...this.state.persons];
     persons.splice(personIndex, 1);
-    this.setState({persons: persons})
+    this.setState({ persons: persons })
   }
 
   togglePersonsHandler = () => {
@@ -73,9 +100,10 @@ class App extends Component {
           {this.state.persons.map((person, index) => {
             return <Person
               click={() => this.deletePersonHandler(index)}
-              name={person.name} 
+              name={person.name}
               age={person.age}
-              key={person.id}/>
+              key={person.id}
+              changed={(event) => this.nameChangedHandler(event, person.id)} />
           })}
           {/* <Person
             name={this.state.persons[0].name}
